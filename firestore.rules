@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permissão para as rotinas operacionais de estoque, entradas e romaneios
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

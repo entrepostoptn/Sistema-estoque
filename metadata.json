@@ -1,0 +1,7 @@
+{
+  "name": "Sistema de Controle de Estoque e Romaneios",
+  "description": "Sistema web profissional de gestão de estoque, controle de peso e unidades, registro de notas fiscais de entrada e romaneios de saída com impressão e relatórios em tempo real via Firebase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

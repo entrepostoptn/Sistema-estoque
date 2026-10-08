@@ -1,0 +1,78 @@
+# ==============================================================================
+# Hostinger & Apache / LiteSpeed Configuration for Single Page Application (SPA)
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Ensure HTTPS (optional - uncomment if Hostinger SSL certificate is installed)
+  # RewriteCond %{HTTPS} off
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Do not rewrite existing files or directories (assets, images, scripts, fonts)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Route all other requests to index.html for React SPA Router
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# ==============================================================================
+# MIME Types (Prevents "Strict MIME type checking" script errors)
+# ==============================================================================
+<IfModule mod_mime.c>
+  AddType application/javascript    .js .mjs
+  AddType text/javascript           .js .mjs
+  AddType text/css                  .css
+  AddType application/json          .json
+  AddType image/svg+xml             .svg
+  AddType font/woff2                .woff2
+  AddType font/woff                 .woff
+  AddType font/ttf                  .ttf
+  AddType image/webp                .webp
+  AddType image/png                 .png
+  AddType image/jpeg                .jpg .jpeg
+  AddType application/wasm          .wasm
+</IfModule>
+
+# ==============================================================================
+# Security & Protection
+# ==============================================================================
+# Disable directory listing
+Options -Indexes
+
+<IfModule mod_headers.c>
+  # Prevent MIME type sniffing
+  Header set X-Content-Type-Options "nosniff"
+  # Referrer policy
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  # Prevent Clickjacking (allow same origin)
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # Caching for immutable hashed assets
+  <FilesMatch "\.(js|mjs|css|woff2|woff|ttf|svg|png|jpg|jpeg|webp)$">
+    Header set Cache-Control "max-age=31536000, public, immutable"
+  </FilesMatch>
+
+  # HTML entry point should never be aggressively cached so user always gets updates
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </FilesMatch>
+</IfModule>
+
+# ==============================================================================
+# GZIP / Deflate Compression
+# ==============================================================================
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
